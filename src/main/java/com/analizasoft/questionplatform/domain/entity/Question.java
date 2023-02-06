@@ -1,5 +1,6 @@
 package com.analizasoft.questionplatform.domain.entity;
 
+import com.analizasoft.questionplatform.domain.factory.Postable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

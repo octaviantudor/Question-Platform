@@ -5,6 +5,8 @@ import com.analizasoft.questionplatform.domain.dto.request.BestAnswerRequestDto;
 import com.analizasoft.questionplatform.domain.entity.Answer;
 import com.analizasoft.questionplatform.domain.entity.Question;
 import com.analizasoft.questionplatform.domain.entity.User;
+import com.analizasoft.questionplatform.domain.enums.PostType;
+import com.analizasoft.questionplatform.domain.factory.PostFactory;
 import com.analizasoft.questionplatform.exception.AppException;
 import com.analizasoft.questionplatform.repository.AnswerRepository;
 import com.analizasoft.questionplatform.repository.QuestionRepository;
@@ -23,13 +25,17 @@ public class AnswerService {
 
     private final UserRepository userRepository;
 
+    private final PostFactory postFactory;
+
     public void addAnswer(AnswerRequestDto answerRequestDto) {
 
         var currentUser = authService.getCurrentUser();
         var question = questionRepository.findById(answerRequestDto.getQuestionId())
                 .orElseThrow(() -> new AppException("Question not found! ", BAD_REQUEST.toString()));
 
-        answearRepository.save(createAnswear(question, answerRequestDto, currentUser));
+        var answer = postFactory.createPostableEntity(question, answerRequestDto.getAnswer(), currentUser, PostType.ANSWER);
+
+        answearRepository.save((Answer) answer);
 
         updateUserPoints(currentUser, 20);
 
@@ -42,15 +48,7 @@ public class AnswerService {
         userRepository.save(currentUser);
     }
 
-    private Answer createAnswear(Question question, AnswerRequestDto answerRequestDto, User user) {
-        return Answer
-                .builder()
-                .question(question)
-                .user(user)
-                .isBestAnswer(Boolean.FALSE)
-                .answer(answerRequestDto.getAnswer())
-                .build();
-    }
+
 
     public void chooseBestAnswer(BestAnswerRequestDto bestAnswerRequestDto) {
 

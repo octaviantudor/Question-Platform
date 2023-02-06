@@ -1,5 +1,6 @@
 package com.analizasoft.questionplatform.domain.entity;
 
+import com.analizasoft.questionplatform.domain.factory.Postable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,7 +13,7 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Suggestion {
+public class Suggestion implements Postable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
